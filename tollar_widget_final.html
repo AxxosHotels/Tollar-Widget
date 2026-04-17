@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tollar AI Widget - Final GitHub Version</title>
-    <!-- Подключение FontAwesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Настройки фона (скриншот сайта из прошлого проекта) */
+        /* Настройки фона (Твой скриншот по прямой ссылке) */
         .site-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: url(https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true);
+            background-image: url('https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
+            filter: brightness(0.6); /* Приглушаем фон, чтобы виджет "сиял" */
         }
 
         body {
@@ -26,32 +26,32 @@
             padding: 0;
             height: 100vh;
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-end; /* Виджет в нижнем правом углу */
             align-items: flex-end;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: #000;
         }
 
         /* Главный корень виджета */
         #tollar-widget-root {
-            margin: 60px;
+            margin: 80px;
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
 
-        /* --- ПАНЕЛЬ КНОПОК (Сдвинута на кольца) --- */
+        /* --- ПАНЕЛЬ КНОПОК (Накладывается на кольца) --- */
         #tollar-panel {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 15px;
             position: absolute;
-            right: 145px; 
+            right: 140px; /* Сдвиг вправо, заходит на кольца */
             top: 50%;
             transform: translateY(-50%);
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -72,13 +72,13 @@
 
         /* Стили кнопок (увеличены на 20%) */
         .contact-btn {
-            width: 62px;
-            height: 62px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -86,130 +86,12 @@
             transition: all 0.3s ease;
             text-decoration: none;
             color: white;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
+        /* Эффект при наведении (МО) - Фон становится красным */
         .contact-btn:hover {
             background: #ff3b3b;
             border-color: #ff3b3b;
             transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(255, 59, 59, 0.7);
-        }
-
-        .contact-btn i {
-            font-size: 26px;
-        }
-
-        /* --- ГРАФИКА И ВИДЕО --- */
-        #tollar-circle {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-            z-index: 5; /* Ниже колец */
-            background: transparent;
-            cursor: pointer;
-        }
-
-        #tollar-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            mix-blend-mode: screen;
-        }
-
-        /* Кольца ПОВЕРХ видео */
-        .ring {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        /* Красное сияние за спиной */
-        .ring-glow {
-            width: 200px;
-            height: 200px;
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 50, 0, 0.4) 0%, transparent 70%);
-            z-index: 2;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            top: 50%;
-            left: 50%;
-        }
-
-        .ring-white {
-            width: 175px;
-            height: 175px;
-            border: 1.5px solid #ffffff;
-            -webkit-mask: conic-gradient(from 180deg, #000 10deg, transparent 360deg);
-            mask: conic-gradient(from 180deg, #000 10deg, transparent 360deg);
-            animation: spin-cw 6s linear infinite;
-        }
-
-        .ring-red {
-            width: 200px;
-            height: 200px;
-            border: 1.5px solid #ff3b3b;
-            -webkit-mask: conic-gradient(from 0deg, #000 0deg, transparent 320deg);
-            mask: conic-gradient(from 0deg, #000 0deg, transparent 320deg);
-            animation: spin-ccw 18s linear infinite;
-        }
-
-        @keyframes spin-cw {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes spin-ccw {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="site-background"></div>
-
-    <div id="tollar-widget-root">
-        <div id="tollar-panel" class="hidden">
-            <div class="contact-btn chat" onclick="alert('Чат открыт')" title="Написать">
-                <i class="fa-regular fa-comment-dots"></i>
-            </div>
-            <div class="contact-btn call" onclick="alert('Вызов оператора')" title="Позвонить">
-                <i class="fa-solid fa-phone-flip"></i>
-            </div>
-            <a href="https://wa.me/your_number" target="_blank" class="contact-btn whatsapp" title="WhatsApp">
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </div>
-
-        <div class="ring-glow"></div>
-        <div class="ring ring-white"></div>
-        <div class="ring ring-red"></div>
-
-        <div id="tollar-circle">
-            <video autoplay loop muted playsinline id="tollar-video">
-                <source src="https://github.com/AxxosHotels/Tollar-Widget/raw/refs/heads/main/Widget_Video_150.webm" type="video/webm">
-            </video>
-        </div>
-    </div>
-
-    <script>
-        const widget = document.getElementById('tollar-widget-root');
-        const panel = document.getElementById('tollar-panel');
-
-        widget.addEventListener('mouseenter', () => {
-            panel.classList.remove('hidden');
-        });
-
-        widget.addEventListener('mouseleave', () => {
-            panel.classList.add('hidden');
-        });
-        
-    </script>
-</body>
-</html>
+            box-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
