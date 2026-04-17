@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tollar AI Agent - Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ФОН: Скриншот вашего сайта */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            background-image: url('https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        /* КОНТЕЙНЕР ВИДЖЕТА */
+        .widget-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            z-index: 9999;
+        }
+
+        /* КРУГИ ПУЛЬСАЦИИ */
+        .circle {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+        }
+        .one {
+            background: rgba(255, 255, 255, 0.5);
+            animation: blobby 6s infinite alternate;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.99);
+        }
+        .two {
+            background: rgba(255, 0, 0, 0.3);
+            animation: blobby 10s infinite alternate-reverse;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.99);
+        }
+
+        /* ОКНО ВИДЕО */
+        .avatar-window {
+            position: absolute;
+            top: 5%; left: 0%;
+            width: 95%; height: 95%;
+            border-radius: 100%;
+            overflow: hidden;
+            z-index: 2;
+        }
+        #tollar-video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* МЕНЮ ИКОНОК */
+        .channels-menu {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .widget-container:hover .channels-menu {
+            opacity: 1; pointer-events: auto; z-index: 10;
+        }
+        .channel {
+            position: absolute;
+            width: 65px; height: 65px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.9s ease;
+        }
+        .channel i { font-size: 35px; }
+        .channel:hover { background: #dc1e28; transform: scale(1.1); }
+
+        /* Позиции кнопок */
+        .widget-container:hover .wa { transform: translate(-45px, 5px); }
+        .widget-container:hover .chat { transform: translate(-50px, 70px); }
+        .widget-container:hover .phone { transform: translate(5px, -40px); }
+
+        /* ЗВЕЗДОЧКИ */
+        .ai-sparkles {
+            position: absolute; top: -20px; left: -20px;
+            width: calc(100% + 40px); height: calc(100% + 40px);
+            pointer-events: none; z-index: 100;
+        }
+        .sparkle {
+            position: absolute; background-color: rgba(255, 255, 255, 0.5);
+            clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+            animation: sparkle-float infinite ease-in-out;
+            opacity: 0;
+        }
+        .s1 { top: 30%; left: 75%; width: 22px; height: 22px; animation-duration: 4s; }
+        .s2 { top: 20%; left: 70%; width: 19px; height: 19px; animation-duration: 11s; }
+        .s3 { top: 25%; left: 85%; width: 12px; height: 12px; animation-duration: 7s; }
+        .s4 { top: 22%; left: 77%; width: 16px; height: 16px; animation-duration: 9s; }
+
+        /* ЧАТ-БАББЛ */
+        .chat-bubble {
+            position: absolute;
+            right: 80%; bottom: 50%;
+            width: 150px;
+            background: rgba(255, 0, 0, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, .5);
+            border-radius: 10px 10px 0px 10px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+            line-height: 1.4;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .chat-bubble.show { opacity: 1; transform: translateY(0); }
+
+        @keyframes blobby {
+            0% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
+            50% { border-radius: 66% 34% 42% 58% / 64% 51% 49% 36%; transform: scale(1.1); }
+            100% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
+        }
+        @keyframes sparkle-float {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            30% { transform: translate(5px, -15px) scale(1); opacity: 1; }
+            70% { transform: translate(-5px, -35px) scale(1); opacity: 0.8; }
+            100% { transform: translate(0, -50px) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget-container">
+    <div id="tollar-bubble" class="chat-bubble">
+        Ahoj! Jsem Tollar. Potřebujete s něčím pomoct?
+    </div>
+
+    <div class="ai-sparkles">
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div>
+    </div>
+
+    <div class="channels-menu">
+        <a href="https://wa.me/yournumber" class="channel wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" class="channel chat" title="Chat"><i class="fa-regular fa-message"></i></a>
+        <a href="tel:+12345678" class="channel phone" title="Call"><i class="fa-solid fa-microphone"></i></a>
+    </div>
+
+    <div class="pulse-circles">
+        <div class="circle one"></div>
+        <div class="circle two"></div>
+    </div>
+
+    <div class="avatar-window">
+        <video id="tollar-video" autoplay loop muted playsinline>
+            <source src="https://github.com/AxxosHotels/Tollar-Widget/raw/refs/heads/main/Widget_Video_150.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+<script>
+    const bubble = document.getElementById('tollar-bubble');
+    const widget = document.querySelector('.widget-container');
+
+    // 1. Показываем баббл через 3 секунды
+    setTimeout(() => {
+        bubble.classList.add('show');
+        
+        // 2. Скрываем баббл автоматически через 6 секунд ПОСЛЕ появления
+        setTimeout(() => {
+            bubble.classList.remove('show');
+        }, 6000);
+        
+    }, 3000);
+
+    // 3. Скрываем баббл мгновенно при наведении
+    widget.addEventListener('mouseenter', () => {
+        bubble.classList.remove('show');
+    });
+</script>
+
+</body>
+</html>
