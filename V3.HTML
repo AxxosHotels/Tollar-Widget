@@ -1,4 +1,15 @@
-<!DOCTYPE html>
+import base64
+
+def get_image_base64(path):
+    try:
+        with open(path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+    except:
+        return ""
+
+bg_base64 = get_image_base64("image_7f43b2.png")
+
+html_content = f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
