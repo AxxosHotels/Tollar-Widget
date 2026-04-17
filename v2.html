@@ -3,107 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tollar AI Agent</title>
+    <title>Tollar AI Agent - Axxos Hotels</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Фон сайта */
+        /* ФОН: Скриншот вашего сайта */
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background: #000 url('https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true') no-repeat center top fixed;
+            background-color: #000;
+            background-image: url('https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true');
             background-size: cover;
-            font-family: sans-serif;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
         }
 
-        /* КОНТЕЙНЕР (Проверьте эти координаты!) */
+        /* Затемнение фона для лучшей видимости виджета */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 0;
+        }
+
+        /* КОНТЕЙНЕР ВИДЖЕТА (Уменьшен до 120px, позиция 100px) */
         .widget-container {
             position: fixed;
             bottom: 100px;
             right: 100px;
             width: 120px;
             height: 120px;
-            z-index: 99999; /* Максимальный приоритет */
-            display: block !important; /* Принудительный показ */
+            cursor: pointer;
+            z-index: 9999;
         }
 
-        /* КРУГИ */
+        /* КРУГИ ПУЛЬСАЦИИ */
         .circle {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             border-radius: 50%;
+            transition: all 0.1s ease;
         }
-        .one { background: rgba(255, 255, 255, 0.5); animation: blobby 6s infinite alternate; box-shadow: 0 0 12px red; }
-        .two { background: rgba(255, 0, 0, 0.3); animation: blobby 10s infinite alternate-reverse; box-shadow: 0 0 8px white; }
+        .one {
+            background: rgba(255, 255, 255, 0.5);
+            animation: blobby 6s infinite alternate;
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.99);
+        }
+        .two {
+            background: rgba(255, 0, 0, 0.3);
+            animation: blobby 10s infinite alternate-reverse;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.99);
+        }
 
+        /* ОКНО АВАТАРА */
         .avatar-window {
             position: absolute;
-            top: 5%; left: 5%;
-            width: 90%; height: 90%;
-            border-radius: 50%;
+            top: 5%; left: 0%;
+            width: 95%; height: 95%;
+            border-radius: 100%;
             overflow: hidden;
-            z-index: 10;
+            z-index: 2;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
-        #tollar-video { width: 100%; height: 100%; object-fit: cover; background: #222; }
+        #tollar-video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            background: #222;
+        }
+
+        /* МЕНЮ КАНАЛОВ СВЯЗИ */
+        .channels-menu {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .widget-container:hover .channels-menu {
+            opacity: 1; pointer-events: auto; z-index: 10;
+        }
+        .channel {
+            position: absolute;
+            width: 52px; height: 52px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+        }
+        .channel i { font-size: 28px; }
+        .channel:hover { background: #dc1e28; transform: scale(1.1); }
+
+        /* Позиции кнопок при наведении */
+        .widget-container:hover .wa { transform: translate(-38px, 4px); }
+        .widget-container:hover .chat { transform: translate(-42px, 58px); }
+        .widget-container:hover .phone { transform: translate(4px, -34px); }
+
+        /* ЗВЕЗДОЧКИ (AI Искры) */
+        .ai-sparkles {
+            position: absolute;
+            top: -15px; left: -15px;
+            width: calc(100% + 30px); height: calc(100% + 30px);
+            pointer-events: none; z-index: 100;
+        }
+        .sparkle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+            animation: sparkle-float infinite ease-in-out;
+            opacity: 0;
+        }
+        .s1 { top: 30%; left: 75%; width: 18px; height: 18px; animation-duration: 4s; }
+        .s2 { top: 20%; left: 70%; width: 15px; height: 15px; animation-duration: 11s; }
+        .s3 { top: 25%; left: 85%; width: 10px; height: 10px; animation-duration: 7s; }
+        .s4 { top: 22%; left: 77%; width: 13px; height: 13px; animation-duration: 9s; }
 
         /* ЧАТ-БАББЛ */
         .chat-bubble {
             position: absolute;
             right: 110%; bottom: 50%;
             width: 140px;
-            background: rgba(220, 30, 40, 0.8);
-            border: 1px solid white;
+            background: rgba(220, 30, 40, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 12px 12px 2px 12px;
-            padding: 10px;
+            padding: 10px 14px;
             color: white;
             font-size: 13px;
+            line-height: 1.4;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             opacity: 0;
-            transition: 0.5s;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
+            z-index: 1000;
         }
-        .chat-bubble.show { opacity: 1; transform: translateY(-10px); }
+        .chat-bubble.show { opacity: 1; transform: translateY(0); }
 
-        /* ИКОНКИ КАНАЛОВ */
-        .channels-menu {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: 0.4s; pointer-events: none;
-        }
-        .widget-container:hover .channels-menu { opacity: 1; pointer-events: auto; }
-
-        .channel {
-            position: absolute;
-            width: 50px; height: 50px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 25px; transition: 0.3s;
-        }
-        .widget-container:hover .wa { transform: translate(-40px, 0px); }
-        .widget-container:hover .chat { transform: translate(-30px, 60px); }
-        .widget-container:hover .phone { transform: translate(20px, -40px); }
-
+        /* АНИМАЦИИ */
         @keyframes blobby {
             0% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
             50% { border-radius: 66% 34% 42% 58% / 64% 51% 49% 36%; transform: scale(1.05); }
             100% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
+        }
+        @keyframes sparkle-float {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            30% { transform: translate(4px, -12px) scale(1); opacity: 1; }
+            70% { transform: translate(-4px, -28px) scale(1); opacity: 0.8; }
+            100% { transform: translate(0, -40px) scale(0); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
 <div class="widget-container">
-    <div id="tollar-bubble" class="chat-bubble">Ahoj! Jsem Tollar. Potřebujete s něčím pomoct?</div>
-    
-    <div class="channels-menu">
-        <a href="#" class="channel wa"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="#" class="channel chat"><i class="fa-regular fa-message"></i></a>
-        <a href="#" class="channel phone"><i class="fa-solid fa-microphone"></i></a>
+    <div id="tollar-bubble" class="chat-bubble">
+        Ahoj! Jsem Tollar. Potřebujete s něčím pomoct?
     </div>
 
-    <div class="circle one"></div>
-    <div class="circle two"></div>
+    <div class="ai-sparkles">
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div>
+    </div>
+
+    <div class="channels-menu">
+        <a href="https://wa.me/yournumber" class="channel wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" class="channel chat" title="Chat"><i class="fa-regular fa-message"></i></a>
+        <a href="tel:+12345678" class="channel phone" title="Call"><i class="fa-solid fa-microphone"></i></a>
+    </div>
+
+    <div class="pulse-circles">
+        <div class="circle one"></div>
+        <div class="circle two"></div>
+    </div>
 
     <div class="avatar-window">
         <video id="tollar-video" autoplay loop muted playsinline>
@@ -114,10 +199,31 @@
 
 <script>
     const bubble = document.getElementById('tollar-bubble');
-    setTimeout(() => { bubble.classList.add('show'); }, 3000);
-    document.querySelector('.widget-container').addEventListener('mouseenter', () => {
-        bubble.style.display = 'none';
+    const widget = document.querySelector('.widget-container');
+
+    const hideBubble = () => {
+        bubble.classList.remove('show');
+        setTimeout(() => {
+            if (!bubble.classList.contains('show')) {
+                bubble.style.display = 'none';
+            }
+        }, 500);
+    };
+
+    // Показ через 3 секунды
+    let showTimer = setTimeout(() => {
+        bubble.classList.add('show');
+        // Автоматическое скрытие через 6 секунд после показа
+        setTimeout(hideBubble, 6000);
+    }, 3000);
+
+    // Мгновенное скрытие при наведении
+    widget.addEventListener('mouseenter', () => {
+        clearTimeout(showTimer);
+        hideBubble();
     });
+
+    widget.addEventListener('click', hideBubble);
 </script>
 
 </body>
