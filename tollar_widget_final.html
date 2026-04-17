@@ -18,6 +18,7 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
+            filter: brightness(0.6); /* Приглушаем фон, чтобы виджет "сиял" */
         }
 
         body {
@@ -50,7 +51,7 @@
             flex-direction: column;
             gap: 15px;
             position: absolute;
-            right: 180px; /* Сдвиг вправо, заходит на кольца */
+            right: 140px; /* Сдвиг вправо, заходит на кольца */
             top: 50%;
             transform: translateY(-50%);
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -94,3 +95,124 @@
             border-color: #ff3b3b;
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
+        }
+
+        .contact-btn i {
+            font-size: 26px; /* Линейные иконки увеличены */
+        }
+
+        /* --- ГРАФИКА И ВИДЕО --- */
+        #tollar-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            z-index: 5; /* Ниже колец по просьбе автора */
+            background: transparent;
+            cursor: pointer;
+        }
+
+        #tollar-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            mix-blend-mode: screen; 
+        }
+
+        /* Кольца ПОВЕРХ видео */
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 10;
+            pointer-events: none; 
+        }
+
+        /* Красное сияние за спиной */
+        .ring-glow {
+            width: 190px;
+            height: 190px;
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 50, 0, 0.35) 0%, transparent 70%);
+            z-index: 2;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
+
+        .ring-white {
+            width: 175px;
+            height: 185px;
+            border: 1px solid #ffffff;
+            -webkit-mask: conic-gradient(from 0deg, #100 90deg, transparent 320deg);
+            mask: conic-gradient(from 0deg, #100 90deg, transparent 320deg);
+            animation: spin-cw 15s linear infinite;
+        }
+
+        .ring-red {
+            width: 185px;
+            height: 195px;
+            border: 1px solid #ff3b3b;
+            -webkit-mask: conic-gradient(from 0deg, #000 0deg, transparent 320deg);
+            mask: conic-gradient(from 0deg, #000 0deg, transparent 320deg);
+            animation: spin-ccw 25s linear infinite;
+        }
+
+        @keyframes spin-cw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-ccw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="site-background"></div>
+
+    <div id="tollar-widget-root">
+        <div id="tollar-panel" class="hidden">
+            <div class="contact-btn chat" onclick="alert('Чат открыт')" title="Написать">
+                <i class="fa-regular fa-comment-dots"></i>
+            </div>
+            
+            <div class="contact-btn call" onclick="alert('Запуск звонка')" title="Позвонить">
+                <i class="fa-solid fa-phone-flip"></i>
+            </div>
+            
+            <a href="https://wa.me/your_number" target="_blank" class="contact-btn whatsapp" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+
+        <div class="ring-glow"></div>
+        <div class="ring ring-white"></div>
+        <div class="ring ring-red"></div>
+
+        <div id="tollar-circle">
+            <video autoplay loop muted playsinline id="tollar-video">
+                <source src="https://github.com/AxxosHotels/Tollar-Widget/raw/refs/heads/main/Widget_Video_150.webm" type="video/webm">
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const widget = document.getElementById('tollar-widget-root');
+        const panel = document.getElementById('tollar-panel');
+
+        // Логика появления панели при наведении
+        widget.addEventListener('mouseenter', () => {
+            panel.classList.remove('hidden');
+        });
+
+        widget.addEventListener('mouseleave', () => {
+            panel.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
