@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tollar AI Agent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Фон сайта */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: #000 url('https://github.com/AxxosHotels/Tollar-Widget/blob/main/web_background.jpg?raw=true') no-repeat center top fixed;
+            background-size: cover;
+            font-family: sans-serif;
+        }
+
+        /* КОНТЕЙНЕР (Проверьте эти координаты!) */
+        .widget-container {
+            position: fixed;
+            bottom: 100px;
+            right: 100px;
+            width: 120px;
+            height: 120px;
+            z-index: 99999; /* Максимальный приоритет */
+            display: block !important; /* Принудительный показ */
+        }
+
+        /* КРУГИ */
+        .circle {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+        }
+        .one { background: rgba(255, 255, 255, 0.5); animation: blobby 6s infinite alternate; box-shadow: 0 0 12px red; }
+        .two { background: rgba(255, 0, 0, 0.3); animation: blobby 10s infinite alternate-reverse; box-shadow: 0 0 8px white; }
+
+        .avatar-window {
+            position: absolute;
+            top: 5%; left: 5%;
+            width: 90%; height: 90%;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 10;
+        }
+        #tollar-video { width: 100%; height: 100%; object-fit: cover; background: #222; }
+
+        /* ЧАТ-БАББЛ */
+        .chat-bubble {
+            position: absolute;
+            right: 110%; bottom: 50%;
+            width: 140px;
+            background: rgba(220, 30, 40, 0.8);
+            border: 1px solid white;
+            border-radius: 12px 12px 2px 12px;
+            padding: 10px;
+            color: white;
+            font-size: 13px;
+            opacity: 0;
+            transition: 0.5s;
+            pointer-events: none;
+        }
+        .chat-bubble.show { opacity: 1; transform: translateY(-10px); }
+
+        /* ИКОНКИ КАНАЛОВ */
+        .channels-menu {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: 0.4s; pointer-events: none;
+        }
+        .widget-container:hover .channels-menu { opacity: 1; pointer-events: auto; }
+
+        .channel {
+            position: absolute;
+            width: 50px; height: 50px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 25px; transition: 0.3s;
+        }
+        .widget-container:hover .wa { transform: translate(-40px, 0px); }
+        .widget-container:hover .chat { transform: translate(-30px, 60px); }
+        .widget-container:hover .phone { transform: translate(20px, -40px); }
+
+        @keyframes blobby {
+            0% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
+            50% { border-radius: 66% 34% 42% 58% / 64% 51% 49% 36%; transform: scale(1.05); }
+            100% { border-radius: 48% 52% 68% 32% / 42% 44% 56% 58%; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget-container">
+    <div id="tollar-bubble" class="chat-bubble">Ahoj! Jsem Tollar. Potřebujete s něčím pomoct?</div>
+    
+    <div class="channels-menu">
+        <a href="#" class="channel wa"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" class="channel chat"><i class="fa-regular fa-message"></i></a>
+        <a href="#" class="channel phone"><i class="fa-solid fa-microphone"></i></a>
+    </div>
+
+    <div class="circle one"></div>
+    <div class="circle two"></div>
+
+    <div class="avatar-window">
+        <video id="tollar-video" autoplay loop muted playsinline>
+            <source src="https://github.com/AxxosHotels/Tollar-Widget/raw/refs/heads/main/Widget_Video_150.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+<script>
+    const bubble = document.getElementById('tollar-bubble');
+    setTimeout(() => { bubble.classList.add('show'); }, 3000);
+    document.querySelector('.widget-container').addEventListener('mouseenter', () => {
+        bubble.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
